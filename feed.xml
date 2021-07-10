@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-10T11:49:53-04:00</updated><id>/feed.xml</id><title type="html">Plaid Powered!</title><subtitle>Paul Houser's Website</subtitle><entry><title type="html">A Progressive Rebuild</title><link href="/jekyll/update/websites/2021/07/09/welcome-to-plaidpowered.html" rel="alternate" type="text/html" title="A Progressive Rebuild" /><published>2021-07-09T10:18:14-04:00</published><updated>2021-07-09T10:18:14-04:00</updated><id>/jekyll/update/websites/2021/07/09/welcome-to-plaidpowered</id><content type="html" xml:base="/jekyll/update/websites/2021/07/09/welcome-to-plaidpowered.html">&lt;p&gt;I am rebuilding my website for the 284th time. It may seem like I never touch my own website,
+but the truth is, since the last time I updated my public site, I made like 5 different websites
+that never saw the light of day.&lt;/p&gt;
+
+&lt;p&gt;The trouble I run into is that I (a) get too busy to finish my site, and/or (b) find the task
+of filling my site with meaningful content to be too daunting to complete, and/or (c) get bored
+with the design and want to start all over. I get bored easily.&lt;/p&gt;
+
+&lt;p&gt;The solution, I hope, is this new site! Which I’ll be building in very tiny increments. The site
+is being powered by the static site generator platform, &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;. No CMS
+to deal with, do database, no hosting really even. I’m keeping everything inside GitHub Pages.&lt;/p&gt;
+
+&lt;p&gt;The content will be thrown up here whenever I feel like writing. I hope to grow a large library
+of helpful code snippets that I often share with colleagues I’m trying to assist. I want to write
+a bunch of articles about coffee. I want to feature some of the super cool clients I’ve had since
+I started freelancing. But, we’ll see.&lt;/p&gt;
+
+&lt;p&gt;The design, today, is the default theme that comes with Jekyll. It doesn’t look bad, right? So I 
+will build on top of it. Or maybe I’ll reinvent it every couple days. I don’t really know, I just
+want to finally refresh my 3 year old landing page that I built primarily to introduce myself
+to potential employers when I was going on a bipolar episode-fueled job hunt. It’s time for a
+change.&lt;/p&gt;
+
+&lt;p&gt;So welcome to my new brain-dumping ground. Let’s hope something useful comes of it.&lt;/p&gt;</content><author><name></name></author><category term="jekyll" /><category term="update" /><category term="websites" /><summary type="html">I am rebuilding my website for 284th time.</summary></entry></feed>
