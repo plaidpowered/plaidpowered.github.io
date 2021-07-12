@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Smooth Scroll Anchor Links Without jQuery, Explained | Plaid Powered!</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Smooth Scroll Anchor Links Without jQuery, Explained" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to talk about" />
+<meta property="og:description" content="How to talk about" />
+<link rel="canonical" href="/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html" />
+<meta property="og:url" content="/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html" />
+<meta property="og:site_name" content="Plaid Powered!" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-11T13:30:50-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Smooth Scroll Anchor Links Without jQuery, Explained" />
+<script type="application/ld+json">
+{"headline":"Smooth Scroll Anchor Links Without jQuery, Explained","dateModified":"2021-07-11T13:30:50-04:00","datePublished":"2021-07-11T13:30:50-04:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html"},"url":"/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html","description":"How to talk about","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Plaid Powered!" /></head>
+<body><header class="site-header" role="banner">
+
+	<div class="wrapper"><a class="site-title" rel="author" href="/">Paul's Website</a><nav class="site-nav">
+		  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+		  <label for="nav-trigger">
+			<span class="menu-icon">
+			  <svg viewBox="0 0 18 15" width="18px" height="15px">
+				<path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+			  </svg>
+			</span>
+		  </label>
+  
+		  <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+		</nav></div>
+  </header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Smooth Scroll Anchor Links Without jQuery, Explained</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-07-11T13:30:50-04:00" itemprop="datePublished">Jul 11, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>It is no secret that I think we web developers should all stop using jQuery. Even when IE11
+compatibility is still needed, most of jQuery’s functions can be handled by native Javascript
+without the need for an extra resource download, and the CPU weight of processing all that
+code. In real world tests, even simple jQuery functions can be as much as 
+<a href="https://medium.com/@trombino.marco/you-might-not-need-jquery-a-2018-performance-case-study-aa6531d0b0c3">25 times slower</a> than their native Javascript counterparts. It may not seem like a big deal for one-off instances,
+but combined, the result is a poor user experience and loss of points in Page Speed Insights,
+affecting the website’s search engine result placement.</p>
+
+<p>But what are we to do with all these very useful snippets of jQuery that do effectively
+improve the user’s experience? Replace them with native code, of course. And here is one such
+example.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$(document).on('click', 'a[href^="#"]', function(event) {
+    event.preventDefault();
+
+    $('html, body').animate({
+        scrollTop: $($.attr(this, 'href')).offset().top
+    }, 800);
+});
+</code></pre></div></div>
+
+<p>This snippet should allow links to anchors on the same page to smoothly scroll through the
+page instead of jumping immediately to the appropriate location in the content. It’s an
+incredibly common experience that the animation makes more pleasing. <a href="#finally">For example, this
+link will take you to the end of the page, where the final replacement code is at.</a></p>
+
+<p>For a long time though, modern browsers have included a set of JavaScript functions that
+do this animation natively. The browser function is also smart enough to recognize user
+preferences and do a hard jump when the user has animations turned off. It’s a far more
+accessible option to replace your jQuery with native functionality. But how?</p>
+
+<p>You’ll notice the above code includes several functions of jQuery, including click-event
+handling. We’ll need to replace that along with the animation. Start with an event
+handler on the document:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+
+} );
+</code></pre></div></div>
+
+<p>Simple as pie, right? Actually simpler. Pie can be difficult to make. But this isn’t the 
+whole story, as this click event handler will get fired everytime someone clicks ANYWHERE
+on the page. We need to only specificly target anchor elements that have an href starting
+with the hash character #, and we do so by getting some information from the event.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target;
+    if ( clickTarget.tagName === 'A' ) {
+        // do something
+    }
+} );
+</code></pre></div></div>
+<p>The event variable provides quite a bit of information about what happened with the user’s
+click, including what the user clicked on. That DOM element is on the <code class="language-plaintext highlighter-rouge">target</code> property
+of the event object. From event.target, we can determine what kind of element was clicked
+on, and fallback to default behavior if it was not an anchor tag.</p>
+
+<p>Only, it’s not quite that straightforward, unfortunately. If all your anchors have just
+text in them, it’ll work fine, but what if your <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> tag contains an image or some other
+child element? <code class="language-plaintext highlighter-rouge">event.target</code> might then be the child element instead, and the above code
+won’t work, so we need one more check to walk up the DOM tree and see if we’re inside an 
+appropriate anchor.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+    // do something
+} );
+</code></pre></div></div>
+
+<p>The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/closest"><code class="language-plaintext highlighter-rouge">closest</code></a> method
+returns either itself or its nearest parent that matches the given selector. So if we
+call <code class="language-plaintext highlighter-rouge">.closest('a')</code> on <code class="language-plaintext highlighter-rouge">event.target</code>, it will either (a) return itself, (b) return
+the appropriate parent element, or (c) return null. If it returns null, we exit and 
+fall back to the existing behavior.</p>
+
+<p>But that’s not quite all, for this functionality, we only want to target anchor elements
+that link to other places in the same page. As is, our functionality would be fired for
+every single <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> link.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+      }
+    // do something
+} );
+</code></pre></div></div>
+
+<p>With this new code we do several things that actually improve upon the jQuery example
+we’re replacing. After converting the <code class="language-plaintext highlighter-rouge">.href</code> property of the anchor to a full 
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/hash">URL object</a>, we can test it 
+against certain properties of the page the user is currently on. Fist we see if the
+domains (hostname) match, then we see if the page URL paths (pathname) match, and then
+finally we check to see if the URL has a hash in it at all. If any of these tests fail,
+we fall back to existing behavior.</p>
+
+<p>Now we need to find an element on the page matching the hash from the anchor tag. We
+can do that with another native function, getElementById.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+    }
+
+    let anchorElement = document.getElementById( linkUrl.hash.substring( 1 ) );
+    if ( ! anchorElement ) {
+        return;
+    }
+} );
+</code></pre></div></div>
+
+<p>Here we use the native string method, substring, to trim off the ‘#’ character from
+the beginning the of anchor hash, and then try to find an element matching that ID
+with the getElementById method.</p>
+
+<p><em>You may ask, why trim the hash when you could put the entire string into
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector">querySelector</a>? 
+Well, in theory, the old-as-dirt <code class="language-plaintext highlighter-rouge">getElementById</code> method should be faster for
+the browser to perform, as it will only have to traverse an indexed list of all the
+elements on the page that have an ID, whereas <code class="language-plaintext highlighter-rouge">querySelector</code> could possibly traverse
+the entire DOM tree. But it’s also very possible that modern browsers have optimized
+the <code class="language-plaintext highlighter-rouge">querySelector</code> method to work effectively the same. So if you think <code class="language-plaintext highlighter-rouge">querySelector</code>
+looks cleaner, use it!</em></p>
+
+<p>If <code class="language-plaintext highlighter-rouge">getElementById</code> (or <code class="language-plaintext highlighter-rouge">querySelector</code>) don’t find an element that matches, they will
+return null, we exit, and return to fallback browser behavior. This might be something
+you want to change, as the default behavior can be annoying.</p>
+
+<div id="finally"></div>
+<p>Next, let’s finally do some scrolling!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+    }
+
+    let anchorElement = document.getElementById( linkUrl.hash.substring( 1 ) );
+    if ( ! anchorElement ) {
+        return;
+    }
+
+    event.preventDefault();
+
+    let offset = 100;
+    let anchorBox = anchorElement.getBoundingClientRect();
+    window.scrollTo({
+        top: anchorBox.y + window.pageYOffset - offset,
+        left: 0,
+        behavior: 'smooth'
+    });
+
+} );
+</code></pre></div></div>
+
+<p>And that’s it! Now we have completely functioning smooth scrolling code to replace
+jQuery. So what’s going on here?</p>
+
+<p>First, we finally tell the browser to stop parsing the rest of the event listeners. At
+this point in the code, we know we have everything we need to do our work, so
+<code class="language-plaintext highlighter-rouge">event.preventDefault()</code> tells the browser not to fallback to any other behavior.</p>
+
+<p>Then we set an <code class="language-plaintext highlighter-rouge">offset</code> value. You can change this to whatever you like, and will give you the
+ability to scroll to just a little bit <em>before</em> an element on the page, so that
+it’s clear you’ve landed in the right place. Often times navigation gets in the way
+of a header element or whatever you wanted the user to scroll to, and so if we give
+the browser a little space, the experience is much more pleasant.</p>
+
+<p>Then with <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">getBoundingClientRect</a>
+we determine the coordinates of the element we would like to scroll to. This function
+returns the relative position of the object compared to wherever the user is already
+scrolled to on the page, so we will need to further offset it with the current
+window’s scroll position.</p>
+
+<p>Lastly, we use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo">scrollTo</a>
+method to do the work of scrolling. Natively, if you pass the <code class="language-plaintext highlighter-rouge">behavior</code> property 
+to it, the browser will typically animate the scroll without any work from us, so that’s
+what we do here.</p>
+
+<p><em>But, why not use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView">scrollIntoView</a>
+and avoid all the math? Using this method, if we
+wanted to provide an offset to the scroll anchor, we’d either have to add padding to the top
+of every element we scroll to, or use the CSS property 
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin">scroll-margin-top</a>. But
+this would also require some editing of our CSS, and the pure JS solution is self-contained.</em></p>
+
+<p>There you have it! Smooth scrolling without an enormous code library attached to your
+website. It may look like a lot more code, but much of that is because we spend a lot
+of code double checking for failures and respecting the behavior of the browser or
+other code that could be installed on the site.</p>
+
+<p>If you enjoyed this or found an error, please drop me a line using the contact methods in
+the site footer. And let me know if there are other common jQuery uses you’d like to
+see replaced natively!</p>
+
+  </div><a class="u-url" href="/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+	<data class="u-url" href="/"></data>
+
+	<div class="wrapper">
+
+		<div class="footer-col-wrapper">
+			<div class="footer-col footer-col-1">
+				<ul class="contact-list">
+					<li class="p-name">Plaid Powered!</li></ul>
+			</div>
+
+			<div class="footer-col footer-col-2">
+				<ul class="social-media-list">
+					<li><a href="https://codepen.io/plaidpowered"><svg class="svg-icon codepen" xmlns="http://www.w3.org/2000/svg" viewBox="20 0 26 26" fill="none" stroke="#000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M22 16.7L33 24l11-7.3V9.3L33 2L22 9.3V16.7z M44 16.7L33 9.3l-11 7.4 M22 9.3l11 7.3 l11-7.3 M33 2v7.3 M33 16.7V24"/>
+					</svg><span class="username">on CodePen</span></a></li>
+					<li><a href="https://github.com/plaidpowered"><svg class="svg-icon github" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.58 31.77"><path d="M16.29 0a16.29 16.29 0 00-5.15 31.75c.82.15 1.11-.36 1.11-.79v-2.77C7.7 29.18 6.74 26 6.74 26a4.36 4.36 0 00-1.81-2.39c-1.47-1 .12-1 .12-1a3.43 3.43 0 012.49 1.68 3.48 3.48 0 004.74 1.36 3.46 3.46 0 011-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3 6.3 0 011.67-4.37 5.94 5.94 0 01.16-4.31s1.37-.44 4.48 1.67a15.41 15.41 0 018.16 0c3.11-2.11 4.47-1.67 4.47-1.67a5.91 5.91 0 01.2 4.28 6.3 6.3 0 011.67 4.37c0 6.26-3.81 7.63-7.44 8a3.85 3.85 0 011.11 3v4.47c0 .53.29.94 1.12.78A16.29 16.29 0 0016.29 0z" fill="#191717" /></svg><span class="username">on GitHub</span></a></li>
+					<li><a href="mailto:"><svg class="svg-icon email" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ><path d="M20,4H4C2.896,4,2,4.896,2,6v12c0,1.104,0.896,2,2,2h16c1.104,0,2-0.896,2-2V6C22,4.896,21.104,4,20,4z M20,8.7l-8,5.334 L4,8.7V6.297l8,5.333l8-5.333V8.7z" fill="#191717"></path></svg><span class="username">paul @ this website address</span></a></li>
+				</ul>
+			</div>
+
+			<div class="footer-col footer-col-3 site-description">
+				<p>Paul Houser&#39;s Website</p>
+			</div>
+		</div>
+
+	</div>
+
+</footer>
+
+<script src="/assets/frontend.js"></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ecd3da0af928437495782bf74395b983"}'></script>
+<!-- End Cloudflare Web Analytics --></body>
+
+</html>

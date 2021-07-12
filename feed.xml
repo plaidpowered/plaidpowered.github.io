@@ -1,4 +1,221 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-10T12:09:14-04:00</updated><id>/feed.xml</id><title type="html">Plaid Powered!</title><subtitle>Paul Houser's Website</subtitle><entry><title type="html">A Progressive Rebuild</title><link href="/site-rebuild/2021/07/09/welcome-to-plaidpowered.html" rel="alternate" type="text/html" title="A Progressive Rebuild" /><published>2021-07-09T10:18:14-04:00</published><updated>2021-07-09T10:18:14-04:00</updated><id>/site-rebuild/2021/07/09/welcome-to-plaidpowered</id><content type="html" xml:base="/site-rebuild/2021/07/09/welcome-to-plaidpowered.html">&lt;p&gt;I am rebuilding my website for the 284th time. It may seem like I never touch my own website,
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-12T15:15:54-04:00</updated><id>/feed.xml</id><title type="html">Plaid Powered!</title><subtitle>Paul Houser's Website</subtitle><entry><title type="html">Smooth Scroll Anchor Links Without jQuery, Explained</title><link href="/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html" rel="alternate" type="text/html" title="Smooth Scroll Anchor Links Without jQuery, Explained" /><published>2021-07-11T13:30:50-04:00</published><updated>2021-07-11T13:30:50-04:00</updated><id>/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery</id><content type="html" xml:base="/code-snippet/2021/07/11/smooth-scroll-anchor-links-without-jquery.html">&lt;p&gt;It is no secret that I think we web developers should all stop using jQuery. Even when IE11
+compatibility is still needed, most of jQuery’s functions can be handled by native Javascript
+without the need for an extra resource download, and the CPU weight of processing all that
+code. In real world tests, even simple jQuery functions can be as much as 
+&lt;a href=&quot;https://medium.com/@trombino.marco/you-might-not-need-jquery-a-2018-performance-case-study-aa6531d0b0c3&quot;&gt;25 times slower&lt;/a&gt; than their native Javascript counterparts. It may not seem like a big deal for one-off instances,
+but combined, the result is a poor user experience and loss of points in Page Speed Insights,
+affecting the website’s search engine result placement.&lt;/p&gt;
+
+&lt;p&gt;But what are we to do with all these very useful snippets of jQuery that do effectively
+improve the user’s experience? Replace them with native code, of course. And here is one such
+example.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(document).on('click', 'a[href^=&quot;#&quot;]', function(event) {
+    event.preventDefault();
+
+    $('html, body').animate({
+        scrollTop: $($.attr(this, 'href')).offset().top
+    }, 800);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This snippet should allow links to anchors on the same page to smoothly scroll through the
+page instead of jumping immediately to the appropriate location in the content. It’s an
+incredibly common experience that the animation makes more pleasing. &lt;a href=&quot;#finally&quot;&gt;For example, this
+link will take you to the end of the page, where the final replacement code is at.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;For a long time though, modern browsers have included a set of JavaScript functions that
+do this animation natively. The browser function is also smart enough to recognize user
+preferences and do a hard jump when the user has animations turned off. It’s a far more
+accessible option to replace your jQuery with native functionality. But how?&lt;/p&gt;
+
+&lt;p&gt;You’ll notice the above code includes several functions of jQuery, including click-event
+handling. We’ll need to replace that along with the animation. Start with an event
+handler on the document:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Simple as pie, right? Actually simpler. Pie can be difficult to make. But this isn’t the 
+whole story, as this click event handler will get fired everytime someone clicks ANYWHERE
+on the page. We need to only specificly target anchor elements that have an href starting
+with the hash character #, and we do so by getting some information from the event.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target;
+    if ( clickTarget.tagName === 'A' ) {
+        // do something
+    }
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The event variable provides quite a bit of information about what happened with the user’s
+click, including what the user clicked on. That DOM element is on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;target&lt;/code&gt; property
+of the event object. From event.target, we can determine what kind of element was clicked
+on, and fallback to default behavior if it was not an anchor tag.&lt;/p&gt;
+
+&lt;p&gt;Only, it’s not quite that straightforward, unfortunately. If all your anchors have just
+text in them, it’ll work fine, but what if your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;a&amp;gt;&lt;/code&gt; tag contains an image or some other
+child element? &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;event.target&lt;/code&gt; might then be the child element instead, and the above code
+won’t work, so we need one more check to walk up the DOM tree and see if we’re inside an 
+appropriate anchor.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+    // do something
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/closest&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;closest&lt;/code&gt;&lt;/a&gt; method
+returns either itself or its nearest parent that matches the given selector. So if we
+call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.closest('a')&lt;/code&gt; on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;event.target&lt;/code&gt;, it will either (a) return itself, (b) return
+the appropriate parent element, or (c) return null. If it returns null, we exit and 
+fall back to the existing behavior.&lt;/p&gt;
+
+&lt;p&gt;But that’s not quite all, for this functionality, we only want to target anchor elements
+that link to other places in the same page. As is, our functionality would be fired for
+every single &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;a&amp;gt;&lt;/code&gt; link.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+      }
+    // do something
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With this new code we do several things that actually improve upon the jQuery example
+we’re replacing. After converting the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.href&lt;/code&gt; property of the anchor to a full 
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/URL/hash&quot;&gt;URL object&lt;/a&gt;, we can test it 
+against certain properties of the page the user is currently on. Fist we see if the
+domains (hostname) match, then we see if the page URL paths (pathname) match, and then
+finally we check to see if the URL has a hash in it at all. If any of these tests fail,
+we fall back to existing behavior.&lt;/p&gt;
+
+&lt;p&gt;Now we need to find an element on the page matching the hash from the anchor tag. We
+can do that with another native function, getElementById.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+    }
+
+    let anchorElement = document.getElementById( linkUrl.hash.substring( 1 ) );
+    if ( ! anchorElement ) {
+        return;
+    }
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we use the native string method, substring, to trim off the ‘#’ character from
+the beginning the of anchor hash, and then try to find an element matching that ID
+with the getElementById method.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;You may ask, why trim the hash when you could put the entire string into
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector&quot;&gt;querySelector&lt;/a&gt;? 
+Well, in theory, the old-as-dirt &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getElementById&lt;/code&gt; method should be faster for
+the browser to perform, as it will only have to traverse an indexed list of all the
+elements on the page that have an ID, whereas &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;querySelector&lt;/code&gt; could possibly traverse
+the entire DOM tree. But it’s also very possible that modern browsers have optimized
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;querySelector&lt;/code&gt; method to work effectively the same. So if you think &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;querySelector&lt;/code&gt;
+looks cleaner, use it!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getElementById&lt;/code&gt; (or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;querySelector&lt;/code&gt;) don’t find an element that matches, they will
+return null, we exit, and return to fallback browser behavior. This might be something
+you want to change, as the default behavior can be annoying.&lt;/p&gt;
+
+&lt;div id=&quot;finally&quot;&gt;&lt;/div&gt;
+&lt;p&gt;Next, let’s finally do some scrolling!&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.addEventListener( 'click', function( event ) {
+    let clickTarget = event.target.closest('a');
+    if ( ! clickTarget ) {
+        return;
+    }
+
+    let linkUrl = new URL( clickTarget.href );
+    if ( linkUrl.hostname !== document.location.hostname 
+      || linkUrl.pathname !== document.location.pathname
+      || linkUrl.hash === '' ) {
+        return;
+    }
+
+    let anchorElement = document.getElementById( linkUrl.hash.substring( 1 ) );
+    if ( ! anchorElement ) {
+        return;
+    }
+
+    event.preventDefault();
+
+    let offset = 100;
+    let anchorBox = anchorElement.getBoundingClientRect();
+    window.scrollTo({
+        top: anchorBox.y + window.pageYOffset - offset,
+        left: 0,
+        behavior: 'smooth'
+    });
+
+} );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And that’s it! Now we have completely functioning smooth scrolling code to replace
+jQuery. So what’s going on here?&lt;/p&gt;
+
+&lt;p&gt;First, we finally tell the browser to stop parsing the rest of the event listeners. At
+this point in the code, we know we have everything we need to do our work, so
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;event.preventDefault()&lt;/code&gt; tells the browser not to fallback to any other behavior.&lt;/p&gt;
+
+&lt;p&gt;Then we set an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;offset&lt;/code&gt; value. You can change this to whatever you like, and will give you the
+ability to scroll to just a little bit &lt;em&gt;before&lt;/em&gt; an element on the page, so that
+it’s clear you’ve landed in the right place. Often times navigation gets in the way
+of a header element or whatever you wanted the user to scroll to, and so if we give
+the browser a little space, the experience is much more pleasant.&lt;/p&gt;
+
+&lt;p&gt;Then with &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect&quot;&gt;getBoundingClientRect&lt;/a&gt;
+we determine the coordinates of the element we would like to scroll to. This function
+returns the relative position of the object compared to wherever the user is already
+scrolled to on the page, so we will need to further offset it with the current
+window’s scroll position.&lt;/p&gt;
+
+&lt;p&gt;Lastly, we use the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo&quot;&gt;scrollTo&lt;/a&gt;
+method to do the work of scrolling. Natively, if you pass the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;behavior&lt;/code&gt; property 
+to it, the browser will typically animate the scroll without any work from us, so that’s
+what we do here.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;But, why not use &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView&quot;&gt;scrollIntoView&lt;/a&gt;
+and avoid all the math? Using this method, if we
+wanted to provide an offset to the scroll anchor, we’d either have to add padding to the top
+of every element we scroll to, or use the CSS property 
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin&quot;&gt;scroll-margin-top&lt;/a&gt;. But
+this would also require some editing of our CSS, and the pure JS solution is self-contained.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;There you have it! Smooth scrolling without an enormous code library attached to your
+website. It may look like a lot more code, but much of that is because we spend a lot
+of code double checking for failures and respecting the behavior of the browser or
+other code that could be installed on the site.&lt;/p&gt;
+
+&lt;p&gt;If you enjoyed this or found an error, please drop me a line using the contact methods in
+the site footer. And let me know if there are other common jQuery uses you’d like to
+see replaced natively!&lt;/p&gt;</content><author><name></name></author><category term="code-snippet" /><summary type="html">How to talk about</summary></entry><entry><title type="html">A Progressive Rebuild</title><link href="/site-rebuild/2021/07/09/welcome-to-plaidpowered.html" rel="alternate" type="text/html" title="A Progressive Rebuild" /><published>2021-07-09T10:18:14-04:00</published><updated>2021-07-09T10:18:14-04:00</updated><id>/site-rebuild/2021/07/09/welcome-to-plaidpowered</id><content type="html" xml:base="/site-rebuild/2021/07/09/welcome-to-plaidpowered.html">&lt;p&gt;I am rebuilding my website for the 284th time. It may seem like I never touch my own website,
 but the truth is, since the last time I updated my public site, I made like 5 different websites
 that never saw the light of day.&lt;/p&gt;
 
